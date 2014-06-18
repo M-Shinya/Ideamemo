@@ -15,5 +15,10 @@
   <%= image_tag(@idea.picture_url,width:600) if @idea.picture.present? %>
 </p>
 
+<p>
+  <strong>Place:</strong>
+  <%= @idea.place %>
+</p>
+
 <%= link_to 'Edit', edit_idea_path(@idea) %> |
 <%= link_to 'Back', ideas_path %>
