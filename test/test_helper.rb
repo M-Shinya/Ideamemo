@@ -1,3 +1,6 @@
+require"simplecov"
+SimpleCov.start"rails"
+
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
@@ -10,4 +13,63 @@ class ActiveSupport::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
+end
+
+
+require"capybara/rails"
+require"fileutils"
+
+class AcceptanceTest < ActionDispatch::IntegrationTest
+  include Capybara::DSL
+  include FileUtils
+  SCREENSHOTS_DIR = "screenshot"
+  self.use_transactional_fixtures = false
+  
+  #テスト実行前
+  setup do
+    Capybara.register_driver :selenium_firefox do |app|
+      Capybara::Selenium::Driver.new(app,browser: :firefox)
+    end
+    Capybara.default_driver = :selenium_firefox
+    
+    Capybara.default_wait_time = 60
+    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.start
+    page.driver.browser.manage.window.maximize
+  end
+  
+  #テスト終了後
+  teardown do
+    DatabaseCleaner.clean
+  end
+  
+  #スクリーンショットを取るメソッド
+  def save_screenshot(fname)
+    unless Capybara.default_driver == :rack_test
+      mkdir_p SCREENSHOTS_DIR
+      sleep 1
+      super(File.join(SCREENSHOTS_DIR,fname))
+    end
+  end
+  
+  #ブラウザの表示サイズを変更するメソッド
+  def ensure_browser_size(width = 600,height = 480)
+    Capybara.current_session.driver.browser.manage.window.resize_to(width,height)
+  end
+  
+  
+  private
+  def visit_root
+    visit root_path
+    ensure_browser_size
+    assert_equal new_user_session_path, current_path
+  end
+  
+  
+    def sign_out
+    click_link "Logout"
+    assert_equal new_user_session_path, current_path
+  end
+  
+  
 end

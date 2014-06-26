@@ -16,6 +16,9 @@ end
 # Use Photo Upload
 gem 'carrierwave'
 
+# Use Devise
+gem 'devise'
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.3'
 # Use Uglifier as compressor for JavaScript assets
@@ -49,3 +52,9 @@ gem 'spring',        group: :development
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+group:test do
+  gem'capybara'
+  gem'selenium-webdriver'
+  gem'database_cleaner'
+  gem'simplecov'
+end

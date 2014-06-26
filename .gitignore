@@ -17,3 +17,6 @@
 
 /public/uploads
 /logs
+
+/screenshot
+/coverage
